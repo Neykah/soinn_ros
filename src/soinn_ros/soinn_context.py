@@ -1,7 +1,7 @@
 import numpy as np
 import soinn
 
-class Soinn_modified(object):
+class Soinn_context(object):
     """
     Modified version of Self-Organizing Incremental Neural
     Network (SOINN).
@@ -46,18 +46,18 @@ class Soinn_modified(object):
         winner, dists = self.__find_nearest_nodes(2, signal)
 
         if not learning:
-_
-_
-_rity_thresholds(winner)
-_sts[1] > sim_thresholds[1]:
-_
-_
-_
-_1])
-_s(winner[1])
-_gnal)
-_r[1], signal)
-_
+            return winner
+
+        sim_thresholds = self.calculate_similarity_thresholds(winner)
+        if dists[0] > sim_thresholds[0] and dists[1] > sim_thresholds[1]:
+            self.__add_node(signal)
+        else:
+            self.__add_edge(winner)
+            self.__increment_edge_ages(winner[1])
+            winner[1] = self.__delete_old_edges(winner[1])
+            self.__update_winner(winner[1], signal)
+            self.__update_adjacent_nodes(winner[1], signal)
+
         if self.num_signal % self.delete_node_period == 0:
             self.__delete_noise_nodes()
         return winner
@@ -94,7 +94,7 @@ _
         n = self.nodes.shape[0]
         indexes = [0.0] * num
         sq_dists = [0.0] * num
-        D = util.modified_calc_distance(self.nodes, np.asarray([signal] * n))
+        D = util.context_calc_distance(self.nodes, np.asarray([signal] * n))
         for i in range(num):
             indexes[i] = np.nanargmin(D)
             sq_dists[i] = D[indexes[i]]
@@ -116,7 +116,7 @@ _
                 pal_indexes = []
                 for k in pals.keys():
                     pal_indexes.append(k[1])
-                sq_dists = util.modified_calc_distance(self.nodes[pal_indexes], np.asarray([self.nodes[i]] * len(pal_indexes)))
+                sq_dists = util.context_calc_distance(self.nodes[pal_indexes], np.asarray([self.nodes[i]] * len(pal_indexes)))
                 sim_thresholds.append(np.max(sq_dists))
         return sim_thresholds
 

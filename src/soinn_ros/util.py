@@ -13,7 +13,7 @@ def calc_mahalanobis(x, y, n_neighbors):
 def calc_distance(x, y):
     return np.sum((x - y)**2, 1)
 
-def modified_calc_distance(x, y, bonus_coef=-0.5, malus_coef=0.5):
+def context_calc_distance(x, y, bonus_coef=-0.5, malus_coef=0.5):
     A = (x - y)**2
     A[:, -1] = np.zeros(A.shape[0])
     dist_init = np.sum(A, axis=1)
